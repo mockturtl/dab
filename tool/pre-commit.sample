@@ -1,0 +1,5 @@
+#!/bin/sh -e
+
+tool/analyze.sh
+tool/fmt.sh
+tool/test
