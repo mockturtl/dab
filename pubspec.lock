@@ -92,6 +92,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.1.2"
+  checked_yaml:
+    dependency: transitive
+    description:
+      name: checked_yaml
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.1"
   code_builder:
     dependency: transitive
     description:
@@ -323,15 +330,8 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.4.0"
-  pub_client:
-    dependency: "direct main"
-    description:
-      name: pub_client
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "3.0.3"
   pub_semver:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: pub_semver
       url: "https://pub.dartlang.org"
@@ -340,10 +340,10 @@ packages:
   pubspec_parse:
     dependency: "direct main"
     description:
-      name: pubspec_parse
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.1.4"
+      path: "../pubspec_parse"
+      relative: true
+    source: path
+    version: "0.1.5-dev"
   quiver:
     dependency: transitive
     description:
@@ -505,5 +505,12 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.16"
+  yamlicious:
+    dependency: "direct main"
+    description:
+      name: yamlicious
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.0"
 sdks:
   dart: ">=2.4.0 <3.0.0"
