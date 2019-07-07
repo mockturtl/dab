@@ -1,0 +1,16 @@
+# Read about `build.yaml` at https://pub.dartlang.org/packages/build_config
+# To update generated code, run `pub run build_runner build`
+targets:
+  $default:
+    sources:
+    builders:
+      build_cli:
+        generate_for:
+          - lib/src/options.dart
+      json_serializable:
+        generate_for:
+          - lib/src/model/*.dart
+        options:
+          checked: true
+          nullable: false
+          field_rename: snake

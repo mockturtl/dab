@@ -5,7 +5,6 @@ part 'release.g.dart';
 
 @JsonSerializable()
 class PackageResponse {
-  // FIXME: Pubspec needs a const constructor
   static final nil = PackageResponse('', [], Release.nil);
 
   final String name;
@@ -23,9 +22,8 @@ class PackageResponse {
   String toString() => toJson().toString();
 }
 
-@JsonSerializable(nullable: false, fieldRename: FieldRename.snake)
+@JsonSerializable()
 class Release {
-  // FIXME: Pubspec needs a const constructor
   static final nil = Release(Uri.parse(''), Pubspec(''), '');
 
   @JsonKey(fromJson: Uri.parse)
