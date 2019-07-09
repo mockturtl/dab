@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:args/command_runner.dart';
 import 'package:dab/cmd.dart';
-import 'package:dab/dab.dart';
 
 main(List<String> args) async {
   final r = CommandRunner<String>('dab', 'The dart+pub companion.')
