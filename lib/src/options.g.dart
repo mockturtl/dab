@@ -7,10 +7,10 @@ part of 'options.dart';
 // **************************************************************************
 
 Options _$parseOptionsResult(ArgResults result) =>
-    Options(result['f'] as String, result['sort'] as bool);
+    Options(result['filename'] as String, result['sort'] as bool);
 
 ArgParser _$populateOptionsParser(ArgParser parser) => parser
-  ..addOption('f',
+  ..addOption('filename',
       abbr: 'f', help: 'Pubspec file to edit', defaultsTo: 'pubspec.yaml')
   ..addFlag('sort',
       abbr: 's',

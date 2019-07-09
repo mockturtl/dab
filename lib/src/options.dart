@@ -3,38 +3,23 @@ import 'package:build_cli_annotations/build_cli_annotations.dart';
 
 part 'options.g.dart';
 
-void addOptions(ArgParser psr) {
-  psr.addOption(
-    Opts.filename,
-    abbr: 'f',
-    defaultsTo: 'pubspec.yaml',
-    help: 'pubspec filename',
-  );
-  psr.addFlag(
-    Opts.sort,
-    abbr: 's',
-    help: 'sort dependencies alphabetically?',
-    defaultsTo: true,
-  );
-}
-
 @CliOptions()
-// FIXME: nice idea, but no way to use with CommandRunner?
 class Options {
   @CliOption(
-    abbr: 'f',
-    defaultsTo: 'pubspec.yaml',
-    help: 'Pubspec file to edit',
-  )
-  final String f;
+      abbr: 'f', defaultsTo: 'pubspec.yaml', help: 'Pubspec file to edit')
+  final String filename;
 
   @CliOption(
       abbr: 's',
-      help: 'If true, dependencies will sort alphabetically.',
-      defaultsTo: true)
+      defaultsTo: true,
+      help: 'If true, dependencies will sort alphabetically.')
   final bool sort;
 
-  Options(this.f, this.sort);
+  const Options(this.filename, this.sort);
+
+  factory Options.from(ArgResults value) => _$parseOptionsResult(value);
+
+  static populate(ArgParser parser) => _$populateOptionsParser(parser);
 }
 
 class Opts {

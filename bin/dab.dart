@@ -8,7 +8,7 @@ main(List<String> args) async {
     ..addCommand(DevDepCommand())
     ..addCommand(RemoveCommand());
 
-  addOptions(r.argParser);
+  Options.populate(r.argParser);
 
   final out = await r.run(args);
 

@@ -13,11 +13,12 @@ class DevDepCommand extends Command<String> {
 
   Future<String> run() async {
     var pkg = await latest(argResults.rest.first);
+    var opts = Options.from(globalResults);
 
-    var pubspec = await load(globalResults[Opts.filename]);
+    var pubspec = await load(opts.filename);
 
     await addDevDependency(pubspec, pkg);
 
-    return toYaml(pubspec, globalResults[Opts.sort]);
+    return toYaml(pubspec, opts.sort);
   }
 }
