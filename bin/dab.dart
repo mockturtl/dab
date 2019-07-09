@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:args/command_runner.dart';
 import 'package:dab/cmd.dart';
 import 'package:dab/dab.dart';
@@ -14,6 +16,6 @@ main(List<String> args) async {
 
   if (out != null) {
     print(out);
-//    await File(_pubspec).writeAsString(out, flush: true);
+    await File(parseOptions(args).filename).writeAsString(out, flush: true);
   }
 }

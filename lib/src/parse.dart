@@ -7,12 +7,14 @@ String toYaml(Pubspec p, [bool sort = true]) {
     ..writeln('name: ${p.name}')
     ..writeln('description: ${p.description}')
     ..writeln('version: ${p.version}');
-  if (_exists(p.homepage)) buf.writeln('homepage: ${p.homepage}');
+
   if (_exists(p.authors)) {
     buf.writeln(p.authors.length == 1
         ? 'author: ${p.authors.first}'
         : 'authors: ${p.authors}');
   }
+
+  if (_exists(p.homepage)) buf.writeln('homepage: ${p.homepage}');
 
 // TODO: executables
 //  if (_exists(p.executables)) {
