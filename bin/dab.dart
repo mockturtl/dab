@@ -14,7 +14,11 @@ main(List<String> args) async {
   final out = await r.run(args);
 
   if (out != null) {
-    print(out);
-    await File(parseOptions(args).filename).writeAsString(out, flush: true);
+//    print(out);
+    var f = parseOptions(args).filename;
+    await File(f).writeAsString(out, flush: true);
+    print("\nUpdated $f. Running 'pub get'...");
+    var res = await Process.run('pub', ['get']);
+    print(res.exitCode == 0 ? 'Done!' : 'ERROR: ${res.exitCode}');
   }
 }

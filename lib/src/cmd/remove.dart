@@ -12,12 +12,11 @@ class RemoveCommand extends Command<String> {
   String get name => 'rm';
 
   Future<String> run() async {
-    var pkg = await latest(argResults.rest.first);
+    var pkg = await latestVersion(argResults.rest.first);
     var opts = Options.from(globalResults);
+    var pubspec = await loadPubspec(opts.filename);
 
-    var pubspec = await load(opts.filename);
-
-    await remove(pubspec, pkg);
+    remove(pubspec, pkg);
 
     return toYaml(pubspec, opts.sort);
   }

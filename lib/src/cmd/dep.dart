@@ -12,12 +12,11 @@ class DepCommand extends Command<String> {
   String get name => 'dep';
 
   Future<String> run() async {
-    var pkg = await latest(argResults.rest.first);
+    var pkg = await latestVersion(argResults.rest.first);
     var opts = Options.from(globalResults);
+    var pubspec = await loadPubspec(opts.filename);
 
-    var pubspec = await load(opts.filename);
-
-    await addDependency(pubspec, pkg);
+    addDependency(pubspec, pkg);
 
     return toYaml(pubspec, opts.sort);
   }

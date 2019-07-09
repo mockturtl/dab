@@ -6,40 +6,47 @@ import 'package:http/http.dart' as http;
 import 'package:pub_semver/pub_semver.dart' show VersionConstraint;
 import 'package:pubspec_parse/pubspec_parse.dart';
 
-Future<Pubspec> addDependency(Pubspec pubspec, Release res) async {
-  pubspec.dependencies.putIfAbsent(
-      res.name,
-      () => HostedDependency(
-          version: VersionConstraint.parse('^${res.version}')));
+Pubspec addDependency(Pubspec pubspec, Release res) {
+  pubspec.dependencies.putIfAbsent(res.name, () => _toHostedDependency(res));
+  _printWarning();
   return pubspec;
 }
 
-Future<Pubspec> addDevDependency(Pubspec pubspec, Release res) async {
-  pubspec.devDependencies.putIfAbsent(
-      res.name,
-      () => HostedDependency(
-          version: VersionConstraint.parse('^${res.version}')));
+Pubspec addDevDependency(Pubspec pubspec, Release res) {
+  pubspec.devDependencies.putIfAbsent(res.name, () => _toHostedDependency(res));
+  _printWarning();
   return pubspec;
 }
 
-Future<PackageResponse> all(String packageName) async {
+Future<PackageResponse> allVersions(String packageName) async {
   final res = await http.get('https://pub.dev/api/packages/$packageName');
   // FIXME: handle errors
   final Map<String, dynamic> json = jsonDecode(res.body);
   return PackageResponse.fromJson(json);
 }
 
-Future<Release> latest(String packageName) async =>
-    (await all(packageName)).latest;
+Future<Release> latestVersion(String packageName) async =>
+    (await allVersions(packageName)).latest;
 
-Future<Pubspec> load([String filename = 'pubspec.yaml']) async {
-  return Pubspec.parse(await File(filename).readAsString());
-}
+Future<Pubspec> loadPubspec([String filename = 'pubspec.yaml']) async =>
+    Pubspec.parse(await File(filename).readAsString());
 
-Future<Pubspec> remove(Pubspec pubspec, Release res) async {
+Pubspec remove(Pubspec pubspec, Release res) {
   var k = res.name;
   pubspec.dependencies.remove(k);
   pubspec.devDependencies.remove(k);
   pubspec.dependencyOverrides.remove(k);
+  _printWarning();
   return pubspec;
 }
+
+void _printWarning() {
+  print(
+      'BEWARE: The current version of dab lacks tests, and could mangle your pubspec!');
+  print("Verify the changes: 'git diff pubspec.yaml'");
+  print(
+      'Did something break? Surprised? File an issue: https://github.com/mockturtl/dab/issues/new');
+}
+
+Dependency _toHostedDependency(Release res) =>
+    HostedDependency(version: VersionConstraint.parse('^${res.version}'));
