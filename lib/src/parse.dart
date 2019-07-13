@@ -4,6 +4,8 @@ import 'dart:developer';
 import 'package:logging/logging.dart';
 import 'package:pubspec_parse/pubspec_parse.dart';
 
+const _flutter = 'flutter';
+
 const _tag = 'dab.parse';
 
 /// Write a pubspec to a YAML file according to https://dart.dev/tools/pub/pubspec.
@@ -73,6 +75,12 @@ String _getVersion(Dependency d) => d.toString().split('Dependency: ')[1];
 
 void _mapToYaml(Map<String, Dependency> map, StringBuffer buf, bool sort) {
   if (sort) map = SplayTreeMap.from(map);
+
+  // always sort Flutter to the top
+  if (map.containsKey(_flutter)) {
+    var flutterDep = map.remove(_flutter);
+    _writeDependency(buf, _flutter, flutterDep);
+  }
   map.forEach((k, v) => _writeDependency(buf, k, v));
 }
 
@@ -113,16 +121,21 @@ class _GitDepWriter implements _Writer {
   void write(StringBuffer buf, String package, covariant GitDependency value) {
     buf.writeln('  $package:');
     buf.write('    git:');
-    var path = '$value'.split('@')[1];
+
     var hasRef = _exists(value.ref);
     var hasPath = _exists(value.path);
+    var url =
+        '$value'.split('GitDependency: url@')[1].replaceFirst('ssh://', '');
+    // if userinfo is present, parsing replaces the separator with a slash
+    if (url.contains('@')) url = url.replaceFirst('/', ':');
+
     if (!hasRef && !hasPath) {
-      buf.writeln(' $path');
+      buf.writeln(' $url');
       return;
     }
 
     buf.writeln();
-    buf.writeln('      url: $path');
+    buf.writeln('      url: $url');
     if (hasRef) buf.writeln('      ref: ${value.ref}');
     if (hasPath) buf.writeln('      path: ${value.path}');
   }
@@ -166,7 +179,7 @@ class _SdkDepWriter implements _Writer {
   void write(StringBuffer buf, String package, covariant SdkDependency value) {
     buf.writeln('  $package:');
     buf.writeln('    sdk: ${value.sdk}');
-    buf.writeln('    version: ${_getVersion(value)}');
+    _writelnIfNonnull(buf, '    version', value.version);
   }
 }
 
