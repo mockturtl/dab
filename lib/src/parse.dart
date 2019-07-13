@@ -1,6 +1,10 @@
 import 'dart:collection';
+import 'dart:developer';
 
+import 'package:logging/logging.dart';
 import 'package:pubspec_parse/pubspec_parse.dart';
+
+const _tag = 'dab.parse';
 
 /// Write a pubspec to a YAML file according to https://dart.dev/tools/pub/pubspec.
 String toYaml(Pubspec p, [bool sort = true]) {
@@ -12,7 +16,7 @@ String toYaml(Pubspec p, [bool sort = true]) {
 
   if (_exists(p.authors)) {
     buf.writeln('authors:');
-    for (var a in p.authors) buf.writeln('- ${a}');
+    for (var a in p.authors) buf.writeln('  - ${a}');
   }
 
   // FIXME: this is specified as a link, not a string
@@ -45,8 +49,9 @@ String toYaml(Pubspec p, [bool sort = true]) {
   if (_exists(p.environment)) {
     buf.writeln();
     buf.writeln('environment:');
-    _writelnIfNonempty(buf, '  sdk', p.environment['sdk']);
-    _writelnIfNonempty(buf, '  flutter', p.environment['flutter']);
+    _writelnIfNonnull(buf, '  sdk',
+        "'${p.environment['sdk']}'"); // upper sdk bound requires single-quote wrapping
+    _writelnIfNonnull(buf, '  flutter', p.environment['flutter']);
   }
 
 // TODO: executables
@@ -64,33 +69,34 @@ String toYaml(Pubspec p, [bool sort = true]) {
 
 _exists(dynamic prop) => prop != null && prop.isNotEmpty;
 
-String _getGit(GitDependency d) {
-  var path = '$d'.split('@')[1];
-  return '\n    git: $path';
-}
-
-String _getPath(PathDependency d) {
-  var path = '$d'.split('@')[1];
-  return '\n    path: $path';
-}
-
-String _getSdk(SdkDependency d) {
-  return '\n    sdk: flutter\n    version: ${_getVersion(d)}';
-}
-
 String _getVersion(Dependency d) => d.toString().split('Dependency: ')[1];
 
 void _mapToYaml(Map<String, Dependency> map, StringBuffer buf, bool sort) {
   if (sort) map = SplayTreeMap.from(map);
-  map.forEach((k, v) => buf.writeln('  $k: ${_toYaml(v)}'));
+  map.forEach((k, v) => _writeDependency(buf, k, v));
 }
 
-String _toYaml(Dependency d) {
-  if (d is HostedDependency) return _getVersion(d); // FIXME: name, url
-  if (d is PathDependency) return _getPath(d);
-  if (d is SdkDependency) return _getSdk(d); // FIXME: sdk, version
-  if (d is GitDependency) return _getGit(d); // FIXME: ref, path
-  return '//FIXME: $d';
+void _writeDependency(StringBuffer buf, String package, Dependency value) {
+  _Writer w = _NilDepWriter();
+  switch (value.runtimeType) {
+    case HostedDependency:
+      w = _HostedDepWriter();
+      break;
+    case PathDependency:
+      w = _PathDepWriter();
+      break;
+    case SdkDependency:
+      w = _SdkDepWriter();
+      break;
+    case GitDependency:
+      w = _GitDepWriter();
+      break;
+    default:
+      log('dependency $package has unhandled concrete type. Check your pubspec.',
+          level: Level.WARNING.value, name: _tag);
+  }
+
+  w.write(buf, package, value);
 }
 
 void _writelnIfNonempty(
@@ -100,4 +106,70 @@ void _writelnIfNonempty(
 
 void _writelnIfNonnull(StringBuffer buf, String yamlKey, dynamic pubspecValue) {
   if (pubspecValue != null) buf.writeln('$yamlKey: $pubspecValue');
+}
+
+class _GitDepWriter implements _Writer {
+  @override
+  void write(StringBuffer buf, String package, covariant GitDependency value) {
+    buf.writeln('  $package:');
+    buf.write('    git:');
+    var path = '$value'.split('@')[1];
+    var hasRef = _exists(value.ref);
+    var hasPath = _exists(value.path);
+    if (!hasRef && !hasPath) {
+      buf.writeln(' $path');
+      return;
+    }
+
+    buf.writeln();
+    buf.writeln('      url: $path');
+    if (hasRef) buf.writeln('      ref: ${value.ref}');
+    if (hasPath) buf.writeln('      path: ${value.path}');
+  }
+}
+
+class _HostedDepWriter implements _Writer {
+  @override
+  void write(
+      StringBuffer buf, String package, covariant HostedDependency value) {
+    buf.write('  $package:');
+    if (value.hosted == null) {
+      buf.writeln(' ${_getVersion(value)}');
+      return;
+    }
+    var h = value.hosted;
+    buf.writeln();
+    buf.writeln('    hosted:');
+    buf.writeln('      name: ${h.name}');
+    buf.writeln('      url: ${h.url}');
+  }
+}
+
+class _NilDepWriter implements _Writer {
+  @override
+  void write(StringBuffer buf, String package, Dependency value) {
+    buf.writeln('  //FIXME: $package: $value');
+  }
+}
+
+class _PathDepWriter implements _Writer {
+  @override
+  void write(StringBuffer buf, String package, covariant PathDependency value) {
+    buf.writeln('  $package:');
+    var path = '$value'.split('@')[1];
+    buf.writeln('    path: $path');
+  }
+}
+
+class _SdkDepWriter implements _Writer {
+  @override
+  void write(StringBuffer buf, String package, covariant SdkDependency value) {
+    buf.writeln('  $package:');
+    buf.writeln('    sdk: ${value.sdk}');
+    buf.writeln('    version: ${_getVersion(value)}');
+  }
+}
+
+abstract class _Writer {
+  void write(StringBuffer buf, String package, Dependency value);
 }
