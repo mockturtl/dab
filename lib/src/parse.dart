@@ -3,15 +3,17 @@ import 'dart:collection';
 import 'package:pubspec_parse/pubspec_parse.dart';
 
 String toYaml(Pubspec p, [bool sort = true]) {
-  final buf = StringBuffer()
-    ..writeln('name: ${p.name}')
-    ..writeln('description: ${p.description}')
-    ..writeln('version: ${p.version}');
+  final buf = StringBuffer();
+
+  if (_exists(p.name)) buf.writeln('name: ${p.name}');
+  if (_exists(p.description)) buf.writeln('description: ${p.description}');
+  if (p.version != null) buf.writeln('version: ${p.version}');
 
   if (_exists(p.authors)) {
-    buf.writeln(p.authors.length == 1
-        ? 'author: ${p.authors.first}'
-        : 'authors: ${p.authors}');
+    buf.writeln('authors:');
+    for (var a in p.authors) {
+      buf.writeln('- ${a}');
+    }
   }
 
   if (_exists(p.homepage)) buf.writeln('homepage: ${p.homepage}');
