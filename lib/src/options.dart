@@ -10,22 +10,17 @@ class Options {
   final String filename;
 
   @CliOption(
-      abbr: 's',
-      defaultsTo: true,
-      help: 'If true, sort list output alphabetically.')
+      abbr: 's', defaultsTo: true, help: 'Sort list output alphabetically.')
   final bool sort;
 
   @CliOption(
       abbr: 'n',
       defaultsTo: false,
-      help:
-          'If true, only print the modified pubspec, without overwriting the file.')
+      help: 'Only print the modified pubspec, without overwriting the file.')
   final bool dryRun;
 
   @CliOption(
-      abbr: 'u',
-      defaultsTo: false,
-      help: 'If true, run `pub get` with the new pubspec.')
+      abbr: 'u', defaultsTo: false, help: 'Run "pub get" with the new pubspec.')
   final bool update;
 
   const Options(this.filename, this.sort, this.update, this.dryRun);

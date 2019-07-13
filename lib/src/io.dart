@@ -42,6 +42,8 @@ Pubspec remove(Pubspec pubspec, Release res) {
 
 void _printWarning() {
   print('BEWARE: The current version of dab could mangle your pubspec!');
+  print("In particular, it WILL eat your 'executables' section, pending");
+  print('https://github.com/dart-lang/pubspec_parse/issues/49');
   print("Verify the changes: 'git diff pubspec.yaml'");
   print(
       'Did something break? Surprised? File an issue: https://github.com/mockturtl/dab/issues/new\n');
