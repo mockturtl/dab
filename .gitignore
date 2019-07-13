@@ -15,6 +15,3 @@ doc/api/
 *.txt
 # pending audit
 tool/*.sh
-
-# test data
-foofydoofy/

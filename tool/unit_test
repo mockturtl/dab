@@ -1,8 +1,0 @@
-#!/bin/sh -e
-
-# Unit tests MUST NOT hit the network.
-
-# Integration tests, by contrast, require a development server.
-# Scripts detect these by the presence of 'local' in the test name.
-
-pub run test --name='^(?!.*local).*$'
