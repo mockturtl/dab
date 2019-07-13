@@ -14,11 +14,15 @@ main(List<String> args) async {
   final out = await r.run(args);
 
   if (out != null) {
-//    print(out);
-    var f = parseOptions(args).filename;
+    var opts = parseOptions(args);
+    var f = opts.filename;
     await File(f).writeAsString(out, flush: true);
-    print("\nUpdated $f. Running 'pub get'...");
-    var res = await Process.run('pub', ['get']);
-    print(res.exitCode == 0 ? 'Done!' : 'ERROR: ${res.exitCode}');
+    print("\nUpdated $f.");
+
+    if (opts.update) {
+      print("Running 'pub get'...");
+      var res = await Process.run('pub', ['get']);
+      print(res.exitCode == 0 ? 'Done!' : 'ERROR: ${res.exitCode}');
+    }
   }
 }

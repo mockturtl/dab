@@ -15,7 +15,11 @@ class Options {
       help: 'If true, dependencies will sort alphabetically.')
   final bool sort;
 
-  const Options(this.filename, this.sort);
+  @CliOption(
+      abbr: 'u', defaultsTo: false, help: 'If true, runs pub get immediately.')
+  final bool update;
+
+  const Options(this.filename, this.sort, this.update);
 
   factory Options.from(ArgResults value) => _$parseOptionsResult(value);
 

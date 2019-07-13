@@ -6,8 +6,10 @@ part of 'options.dart';
 // CliGenerator
 // **************************************************************************
 
-Options _$parseOptionsResult(ArgResults result) =>
-    Options(result['filename'] as String, result['sort'] as bool);
+Options _$parseOptionsResult(ArgResults result) => Options(
+    result['filename'] as String,
+    result['sort'] as bool,
+    result['update'] as bool);
 
 ArgParser _$populateOptionsParser(ArgParser parser) => parser
   ..addOption('filename',
@@ -15,7 +17,9 @@ ArgParser _$populateOptionsParser(ArgParser parser) => parser
   ..addFlag('sort',
       abbr: 's',
       help: 'If true, dependencies will sort alphabetically.',
-      defaultsTo: true);
+      defaultsTo: true)
+  ..addFlag('update',
+      abbr: 'u', help: 'If true, runs pub get immediately.', defaultsTo: false);
 
 final _$parserForOptions = _$populateOptionsParser(ArgParser());
 
