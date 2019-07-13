@@ -16,12 +16,19 @@ class Options {
   final bool sort;
 
   @CliOption(
+      abbr: 'n',
+      defaultsTo: false,
+      help:
+          'If true, only print the modified pubspec, without overwriting the file.')
+  final bool dryRun;
+
+  @CliOption(
       abbr: 'u',
       defaultsTo: false,
       help: 'If true, run `pub get` with the new pubspec.')
   final bool update;
 
-  const Options(this.filename, this.sort, this.update);
+  const Options(this.filename, this.sort, this.update, this.dryRun);
 
   factory Options.from(ArgResults value) => _$parseOptionsResult(value);
 

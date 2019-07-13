@@ -12,17 +12,22 @@ main(List<String> args) async {
   Options.populate(r.argParser);
 
   final out = await r.run(args);
+  var opts = parseOptions(args);
 
-  if (out != null) {
-    var opts = parseOptions(args);
-    var f = opts.filename;
-    await File(f).writeAsString(out, flush: true);
-    print("\nUpdated $f.");
+  if (opts.dryRun) {
+    print(out);
+    return;
+  }
 
-    if (opts.update) {
-      print("Running 'pub get'...");
-      var res = await Process.run('pub', ['get']);
-      print(res.exitCode == 0 ? 'Done!' : 'ERROR: ${res.exitCode}');
-    }
+  if (out == null) return;
+
+  var f = opts.filename;
+  await File(f).writeAsString(out, flush: true);
+  print("\nUpdated $f.");
+
+  if (opts.update) {
+    print("Running 'pub get'...");
+    var res = await Process.run('pub', ['get']);
+    print(res.exitCode == 0 ? 'Done!' : 'ERROR: ${res.exitCode}');
   }
 }

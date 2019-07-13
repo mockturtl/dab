@@ -44,7 +44,7 @@ void _printWarning() {
   print('BEWARE: The current version of dab could mangle your pubspec!');
   print("Verify the changes: 'git diff pubspec.yaml'");
   print(
-      'Did something break? Surprised? File an issue: https://github.com/mockturtl/dab/issues/new');
+      'Did something break? Surprised? File an issue: https://github.com/mockturtl/dab/issues/new\n');
 }
 
 Dependency _toHostedDependency(Release res) =>
