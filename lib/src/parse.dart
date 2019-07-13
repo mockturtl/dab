@@ -101,7 +101,7 @@ void _writeDependency(StringBuffer buf, String package, Dependency value) {
       break;
     default:
       log('dependency $package has unhandled concrete type. Check your pubspec.',
-          level: Level.WARNING.value, name: _tag);
+          level: Level.SEVERE.value, name: _tag);
   }
 
   w.write(buf, package, value);
