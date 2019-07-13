@@ -16,7 +16,7 @@ ArgParser _$populateOptionsParser(ArgParser parser) => parser
       abbr: 'f', help: 'Pubspec file to edit', defaultsTo: 'pubspec.yaml')
   ..addFlag('sort',
       abbr: 's',
-      help: 'If true, dependencies will sort alphabetically.',
+      help: 'If true, list output is sorted alphabetically.',
       defaultsTo: true)
   ..addFlag('update',
       abbr: 'u', help: 'If true, runs pub get immediately.', defaultsTo: false);

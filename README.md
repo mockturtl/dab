@@ -1,21 +1,38 @@
 # dab
 
-A sample command-line application.
-
-Created from templates made available by Stagehand under a BSD-style
-[license](https://github.com/dart-lang/stagehand/blob/master/LICENSE).
+The dart+pub companion.  ヽ( •_)ᕗ
 
 ### setup
 
-Obtain an API token.
-  - [GitLab][gitlab-token] ([docs][gitlab-token-docs])
+Install or update:
 
-
-Save the API token(s) to a `.env` file.
-
-```sh
-gitlab_token="9koXpg98eAheJpvBs5tK"
+```shell
+$ pub global activate dab
 ```
 
-[gitlab-token]: https://gitlab.com/profile/personal_access_tokens
-[gitlab-token-docs]: https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html
+### about
+
+```sh
+$ dab help
+The dart+pub companion.  ヽ( •_)ᕗ
+
+Usage: dab <command> [arguments]
+
+Global options:
+-h, --help           Print this usage information.
+-f, --filename       Pubspec file to edit
+                     (defaults to "pubspec.yaml")
+
+-s, --[no-]sort      If true, list output is sorted alphabetically.
+                     (defaults to on)
+
+-u, --[no-]update    If true, runs pub get immediately.
+
+Available commands:
+  dep      Add a package to the pubspec's `dependency` section.
+  devdep   Add a package to the pubspec's `dev_dependency` section.
+  help     Display help information for dab.
+  rm       Remove a package from the pubspec.
+
+Run "dab help <command>" for more information about a command.
+```

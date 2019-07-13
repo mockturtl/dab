@@ -6,7 +6,8 @@ import '../parse.dart';
 
 class DepCommand extends Command<String> {
   @override
-  String get description => 'Adds a dependency to pubspec.yaml.';
+  String get description =>
+      "Add a package to the pubspec's `dependency` section.";
 
   @override
   String get name => 'dep';

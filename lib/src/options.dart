@@ -12,11 +12,13 @@ class Options {
   @CliOption(
       abbr: 's',
       defaultsTo: true,
-      help: 'If true, dependencies will sort alphabetically.')
+      help: 'If true, sort list output alphabetically.')
   final bool sort;
 
   @CliOption(
-      abbr: 'u', defaultsTo: false, help: 'If true, runs pub get immediately.')
+      abbr: 'u',
+      defaultsTo: false,
+      help: 'If true, run `pub get` with the new pubspec.')
   final bool update;
 
   const Options(this.filename, this.sort, this.update);

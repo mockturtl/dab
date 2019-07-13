@@ -6,7 +6,7 @@ import '../parse.dart';
 
 class RemoveCommand extends Command<String> {
   @override
-  String get description => 'Removes a dependency from pubspec.yaml.';
+  String get description => 'Remove a package from the pubspec.';
 
   @override
   String get name => 'rm';

@@ -4,7 +4,7 @@ import 'package:args/command_runner.dart';
 import 'package:dab/cmd.dart';
 
 main(List<String> args) async {
-  final r = CommandRunner<String>('dab', 'The dart+pub companion.')
+  final r = CommandRunner<String>('dab', 'The dart+pub companion.  ヽ( •_)ᕗ')
     ..addCommand(DepCommand())
     ..addCommand(DevDepCommand())
     ..addCommand(RemoveCommand());
