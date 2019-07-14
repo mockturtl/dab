@@ -16,7 +16,7 @@ String toYaml(Pubspec p, [bool sort = true, bool scpSyntax = true]) {
 
   _writelnIfNonempty(buf, 'description', p.description);
 
-  if (_exists(p.authors)) {
+  if (_has(p.authors)) {
     buf.writeln('authors:');
     for (var a in p.authors) buf.writeln('  - ${a}');
   }
@@ -30,25 +30,25 @@ String toYaml(Pubspec p, [bool sort = true, bool scpSyntax = true]) {
 
   _writelnIfNonempty(buf, 'documentation', p.documentation);
 
-  if (_exists(p.dependencies)) {
+  if (_has(p.dependencies)) {
     buf.writeln();
     buf.writeln('dependencies:');
     _mapToYaml(p.dependencies, buf, sort, scpSyntax);
   }
 
-  if (_exists(p.devDependencies)) {
+  if (_has(p.devDependencies)) {
     buf.writeln();
     buf.writeln('dev_dependencies:');
     _mapToYaml(p.devDependencies, buf, sort, scpSyntax);
   }
 
-  if (_exists(p.dependencyOverrides)) {
+  if (_has(p.dependencyOverrides)) {
     buf.writeln();
     buf.writeln('dependency_overrides:');
     _mapToYaml(p.dependencyOverrides, buf, sort, scpSyntax);
   }
 
-  if (_exists(p.environment)) {
+  if (_has(p.environment)) {
     buf.writeln();
     buf.writeln('environment:');
     _writelnIfNonnull(buf, '  sdk',
@@ -64,14 +64,20 @@ String toYaml(Pubspec p, [bool sort = true, bool scpSyntax = true]) {
 
   _writelnIfNonempty(buf, 'publish_to', p.publishTo);
 
-  // TODO: flutter
+  _flutterToYaml(buf, p.flutter);
 
   return buf.toString();
 }
 
-_exists(dynamic prop) => prop != null && prop.isNotEmpty;
+void _flutterToYaml(StringBuffer buf, Map<String, dynamic> flutter) {
+  if (!_has(flutter)) return;
 
-String _getVersion(Dependency d) => d.toString().split('Dependency: ')[1];
+  buf.writeln();
+  buf.writeln('flutter:');
+  flutter.keys.forEach((k) => buf.writeln('  $k:'));
+}
+
+_has(dynamic prop) => prop != null && prop.isNotEmpty;
 
 void _mapToYaml(Map<String, Dependency> map, StringBuffer buf, bool sort,
     bool useScpSyntax) {
@@ -111,7 +117,7 @@ void _writeDependency(
 
 void _writelnIfNonempty(
     StringBuffer buf, String yamlKey, dynamic pubspecValue) {
-  if (_exists(pubspecValue)) buf.writeln('$yamlKey: $pubspecValue');
+  if (_has(pubspecValue)) buf.writeln('$yamlKey: $pubspecValue');
 }
 
 void _writelnIfNonnull(StringBuffer buf, String yamlKey, dynamic pubspecValue) {
@@ -128,8 +134,8 @@ class _GitDepWriter implements _Writer {
     buf.writeln('  $package:');
     buf.write('    git:');
 
-    var hasRef = _exists(value.ref);
-    var hasPath = _exists(value.path);
+    var hasRef = _has(value.ref);
+    var hasPath = _has(value.path);
     var url = '${value.url}';
     if (isScpSyntax) url = _sshToScp(url);
 
@@ -157,7 +163,7 @@ class _HostedDepWriter implements _Writer {
       StringBuffer buf, String package, covariant HostedDependency value) {
     buf.write('  $package:');
     if (value.hosted == null) {
-      buf.writeln(' ${_getVersion(value)}');
+      buf.writeln(' ${value.version}');
       return;
     }
     var h = value.hosted;
@@ -179,8 +185,7 @@ class _PathDepWriter implements _Writer {
   @override
   void write(StringBuffer buf, String package, covariant PathDependency value) {
     buf.writeln('  $package:');
-    var path = '$value'.split('@')[1];
-    buf.writeln('    path: $path');
+    buf.writeln('    path: ${value.path}');
   }
 }
 
