@@ -4,6 +4,7 @@ import '../io.dart';
 import '../options.dart';
 import '../parse.dart';
 
+/// Add a package as a dev_dependency.
 class DevDepCommand extends Command<String> {
   @override
   String get description =>

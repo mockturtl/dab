@@ -4,6 +4,7 @@ import '../io.dart';
 import '../options.dart';
 import '../parse.dart';
 
+/// Remove a dependency.
 class RemoveCommand extends Command<String> {
   @override
   String get description => 'Remove a package from the pubspec.';

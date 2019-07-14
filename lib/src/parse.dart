@@ -8,7 +8,7 @@ const _flutter = 'flutter';
 
 const _tag = 'dab.parse';
 
-/// Write a pubspec to a YAML file according to https://dart.dev/tools/pub/pubspec.
+/// Write a [Pubspec] to a YAML file according to https://dart.dev/tools/pub/pubspec.
 String toYaml(Pubspec p, [bool sort = true, bool scpSyntax = true]) {
   final buf = StringBuffer()..writeln('name: ${p.name}');
 
