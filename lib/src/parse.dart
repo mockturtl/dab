@@ -9,7 +9,7 @@ const _flutter = 'flutter';
 const _tag = 'dab.parse';
 
 /// Write a pubspec to a YAML file according to https://dart.dev/tools/pub/pubspec.
-String toYaml(Pubspec p, [bool sort = true]) {
+String toYaml(Pubspec p, [bool sort = true, bool scpSyntax = true]) {
   final buf = StringBuffer()..writeln('name: ${p.name}');
 
   _writelnIfNonnull(buf, 'version', p.version);
@@ -33,19 +33,19 @@ String toYaml(Pubspec p, [bool sort = true]) {
   if (_exists(p.dependencies)) {
     buf.writeln();
     buf.writeln('dependencies:');
-    _mapToYaml(p.dependencies, buf, sort);
+    _mapToYaml(p.dependencies, buf, sort, scpSyntax);
   }
 
   if (_exists(p.devDependencies)) {
     buf.writeln();
     buf.writeln('dev_dependencies:');
-    _mapToYaml(p.devDependencies, buf, sort);
+    _mapToYaml(p.devDependencies, buf, sort, scpSyntax);
   }
 
   if (_exists(p.dependencyOverrides)) {
     buf.writeln();
     buf.writeln('dependency_overrides:');
-    _mapToYaml(p.dependencyOverrides, buf, sort);
+    _mapToYaml(p.dependencyOverrides, buf, sort, scpSyntax);
   }
 
   if (_exists(p.environment)) {
@@ -73,18 +73,20 @@ _exists(dynamic prop) => prop != null && prop.isNotEmpty;
 
 String _getVersion(Dependency d) => d.toString().split('Dependency: ')[1];
 
-void _mapToYaml(Map<String, Dependency> map, StringBuffer buf, bool sort) {
+void _mapToYaml(Map<String, Dependency> map, StringBuffer buf, bool sort,
+    bool useScpSyntax) {
   if (sort) map = SplayTreeMap.from(map);
 
   // always sort Flutter to the top
   if (map.containsKey(_flutter)) {
     var flutterDep = map.remove(_flutter);
-    _writeDependency(buf, _flutter, flutterDep);
+    _writeDependency(buf, _flutter, flutterDep, false);
   }
-  map.forEach((k, v) => _writeDependency(buf, k, v));
+  map.forEach((k, v) => _writeDependency(buf, k, v, useScpSyntax));
 }
 
-void _writeDependency(StringBuffer buf, String package, Dependency value) {
+void _writeDependency(
+    StringBuffer buf, String package, Dependency value, bool useScpSyntax) {
   _Writer w = _NilDepWriter();
   switch (value.runtimeType) {
     case HostedDependency:
@@ -97,7 +99,7 @@ void _writeDependency(StringBuffer buf, String package, Dependency value) {
       w = _SdkDepWriter();
       break;
     case GitDependency:
-      w = _GitDepWriter();
+      w = _GitDepWriter(useScpSyntax);
       break;
     default:
       log('dependency $package has unhandled concrete type. Check your pubspec.',
@@ -117,6 +119,10 @@ void _writelnIfNonnull(StringBuffer buf, String yamlKey, dynamic pubspecValue) {
 }
 
 class _GitDepWriter implements _Writer {
+  final bool isScpSyntax;
+
+  _GitDepWriter(this.isScpSyntax);
+
   @override
   void write(StringBuffer buf, String package, covariant GitDependency value) {
     buf.writeln('  $package:');
@@ -124,10 +130,8 @@ class _GitDepWriter implements _Writer {
 
     var hasRef = _exists(value.ref);
     var hasPath = _exists(value.path);
-    var url =
-        '$value'.split('GitDependency: url@')[1].replaceFirst('ssh://', '');
-    // if userinfo is present, parsing replaces the separator with a slash
-    if (url.contains('@')) url = url.replaceFirst('/', ':');
+    var url = '${value.url}';
+    if (isScpSyntax) url = _sshToScp(url);
 
     if (!hasRef && !hasPath) {
       buf.writeln(' $url');
@@ -139,6 +143,12 @@ class _GitDepWriter implements _Writer {
     if (hasRef) buf.writeln('      ref: ${value.ref}');
     if (hasPath) buf.writeln('      path: ${value.path}');
   }
+
+  // pubspec_parse accepts scp syntax for git links.  See _tryParseScpUri.
+  // https://github.com/dart-lang/pubspec_parse/blob/master/lib/src/dependency.dart#L136
+  String _sshToScp(String url) => (url.contains('ssh://'))
+      ? url.replaceFirst('ssh://', '').replaceFirst('/', ':')
+      : url;
 }
 
 class _HostedDepWriter implements _Writer {

@@ -10,17 +10,19 @@ Options _$parseOptionsResult(ArgResults result) => Options(
     result['filename'] as String,
     result['sort'] as bool,
     result['update'] as bool,
-    result['dry-run'] as bool);
+    result['dry-run'] as bool,
+    result['scp'] as bool);
 
 ArgParser _$populateOptionsParser(ArgParser parser) => parser
+  ..addFlag('scp', help: 'Write ssh URLs with scp syntax.', defaultsTo: true)
   ..addOption('filename',
       abbr: 'f', help: 'Pubspec file to edit', defaultsTo: 'pubspec.yaml')
-  ..addFlag('sort',
-      abbr: 's', help: 'Sort list output alphabetically.', defaultsTo: true)
   ..addFlag('dry-run',
       abbr: 'n',
       help: 'Only print the modified pubspec, without overwriting the file.',
       defaultsTo: false)
+  ..addFlag('sort',
+      abbr: 's', help: 'Sort list output alphabetically.', defaultsTo: true)
   ..addFlag('update',
       abbr: 'u',
       help: 'Run "pub get" with the new pubspec.',

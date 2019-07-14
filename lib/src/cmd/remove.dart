@@ -18,6 +18,6 @@ class RemoveCommand extends Command<String> {
 
     remove(pubspec, pkg);
 
-    return toYaml(pubspec, opts.sort);
+    return toYaml(pubspec, opts.sort, opts.scpSyntax);
   }
 }

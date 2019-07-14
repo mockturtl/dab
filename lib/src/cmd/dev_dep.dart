@@ -19,6 +19,6 @@ class DevDepCommand extends Command<String> {
 
     addDevDependency(pubspec, pkg);
 
-    return toYaml(pubspec, opts.sort);
+    return toYaml(pubspec, opts.sort, opts.scpSyntax);
   }
 }
