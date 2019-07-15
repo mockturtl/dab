@@ -1,9 +1,18 @@
+dab adds package dependencies to your pubspec.
 
+### known issues
 
+- It **WILL** eat your `executables` section, pending
+[dart-lang/pubspec_parse#49](https://github.com/dart-lang/pubspec_parse/issues/49).
+
+- It will not preserve dependency order.  It sorts them alphabetically.
+
+It's always a good idea review the changes: `git diff pubspec.yaml`.
+      
 ### setup
 
-Assuming the [Dart SDK][sdk] is available on your `$PATH`, this will
-install (or update) the top-level `dab` command:
+Assuming the [Dart SDK][sdk] is available on your `$PATH`, to
+install (or update) the top-level `dab` command, run:
 
 ```sh
 $ pub global activate dab

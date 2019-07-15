@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:pub_semver/pub_semver.dart' show VersionConstraint;
 import 'package:pubspec_parse/pubspec_parse.dart';
 
 part 'release.g.dart';
@@ -39,6 +40,9 @@ class Release {
 
   factory Release.fromJson(Map<String, dynamic> json) =>
       _$ReleaseFromJson(json);
+
+  HostedDependency get asDependency =>
+      HostedDependency(version: VersionConstraint.parse('^$version'));
 
   String get name => pubspec.name;
 

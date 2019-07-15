@@ -18,7 +18,7 @@ class DepCommand extends Command<String> {
     var opts = Options.from(globalResults);
     var pubspec = await loadPubspec(opts.filename);
 
-    addDependency(pubspec, pkg);
+    pubspec.dependencies.putIfAbsent(pkg.name, () => pkg.asDependency);
 
     return toYaml(pubspec, opts.sort, opts.scpSyntax);
   }

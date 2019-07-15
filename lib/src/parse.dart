@@ -3,10 +3,25 @@ import 'dart:developer';
 
 import 'package:logging/logging.dart';
 import 'package:pubspec_parse/pubspec_parse.dart';
+import 'package:yaml/yaml.dart';
+
+const _assets = 'assets';
+
+const _family = 'family';
 
 const _flutter = 'flutter';
 
+const _fontAsset = 'asset';
+
+const _fonts = 'fonts';
+
+const _style = 'style';
+
 const _tag = 'dab.parse';
+
+const _usesMaterialDesign = 'uses-material-design';
+
+const _weight = 'weight';
 
 /// Write a [Pubspec] to a YAML file according to https://dart.dev/tools/pub/pubspec.
 String toYaml(Pubspec p, [bool sort = true, bool scpSyntax = true]) {
@@ -33,19 +48,19 @@ String toYaml(Pubspec p, [bool sort = true, bool scpSyntax = true]) {
   if (_has(p.dependencies)) {
     buf.writeln();
     buf.writeln('dependencies:');
-    _mapToYaml(p.dependencies, buf, sort, scpSyntax);
+    _depsToYaml(p.dependencies, buf, sort, scpSyntax);
   }
 
   if (_has(p.devDependencies)) {
     buf.writeln();
     buf.writeln('dev_dependencies:');
-    _mapToYaml(p.devDependencies, buf, sort, scpSyntax);
+    _depsToYaml(p.devDependencies, buf, sort, scpSyntax);
   }
 
   if (_has(p.dependencyOverrides)) {
     buf.writeln();
     buf.writeln('dependency_overrides:');
-    _mapToYaml(p.dependencyOverrides, buf, sort, scpSyntax);
+    _depsToYaml(p.dependencyOverrides, buf, sort, scpSyntax);
   }
 
   if (_has(p.environment)) {
@@ -69,17 +84,7 @@ String toYaml(Pubspec p, [bool sort = true, bool scpSyntax = true]) {
   return buf.toString();
 }
 
-void _flutterToYaml(StringBuffer buf, Map<String, dynamic> flutter) {
-  if (!_has(flutter)) return;
-
-  buf.writeln();
-  buf.writeln('flutter:');
-  flutter.keys.forEach((k) => buf.writeln('  $k:'));
-}
-
-_has(dynamic prop) => prop != null && prop.isNotEmpty;
-
-void _mapToYaml(Map<String, Dependency> map, StringBuffer buf, bool sort,
+void _depsToYaml(Map<String, Dependency> map, StringBuffer buf, bool sort,
     bool useScpSyntax) {
   if (sort) map = SplayTreeMap.from(map);
 
@@ -90,6 +95,39 @@ void _mapToYaml(Map<String, Dependency> map, StringBuffer buf, bool sort,
   }
   map.forEach((k, v) => _writeDependency(buf, k, v, useScpSyntax));
 }
+
+void _flutterToYaml(StringBuffer buf, Map<String, dynamic> flutter) {
+  if (!_has(flutter)) return;
+
+  buf.writeln();
+  buf.writeln('flutter:');
+
+  _writelnIfNonnull(
+      buf, '  $_usesMaterialDesign', flutter[_usesMaterialDesign]);
+
+  if (_has(flutter[_assets])) {
+    buf.writeln('  assets:');
+    var assets = List.castFrom<dynamic, String>(flutter[_assets]);
+    assets.forEach((a) => buf.writeln('    - $a'));
+  }
+
+  if (_has(flutter[_assets])) {
+    buf.writeln('  fonts:');
+    var families = List.castFrom<dynamic, YamlMap>(flutter[_fonts]);
+    families.forEach((fam) {
+      buf.writeln('    - family: ${fam[_family]}');
+      buf.writeln('      fonts:');
+      var fonts = List.castFrom<dynamic, YamlMap>(fam[_fonts]);
+      fonts.forEach((f) {
+        buf.writeln('        - asset: ${f[_fontAsset]}');
+        _writelnIfNonnull(buf, '          weight', f[_weight]);
+        _writelnIfNonnull(buf, '          style', f[_style]);
+      });
+    });
+  }
+}
+
+_has(dynamic prop) => prop != null && prop.isNotEmpty;
 
 void _writeDependency(
     StringBuffer buf, String package, Dependency value, bool useScpSyntax) {

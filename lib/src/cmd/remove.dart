@@ -17,7 +17,10 @@ class RemoveCommand extends Command<String> {
     var opts = Options.from(globalResults);
     var pubspec = await loadPubspec(opts.filename);
 
-    remove(pubspec, pkg);
+    var k = pkg.name;
+    pubspec.dependencies.remove(k);
+    pubspec.devDependencies.remove(k);
+    pubspec.dependencyOverrides.remove(k);
 
     return toYaml(pubspec, opts.sort, opts.scpSyntax);
   }
