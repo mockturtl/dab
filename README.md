@@ -1,14 +1,6 @@
-dab adds package dependencies to your pubspec.
+dab adds package dependencies to your pubspec, saving you a trip to [pub.dev](https://pub.dev)
+to look up the latest version.
 
-### known issues
-
-- It **WILL** eat your `executables` section, pending
-[dart-lang/pubspec_parse#49](https://github.com/dart-lang/pubspec_parse/issues/49).
-
-- It will not preserve dependency order.  It sorts them alphabetically.
-
-It's always a good idea review the changes: `git diff pubspec.yaml`.
-      
 ### setup
 
 Assuming the [Dart SDK][sdk] is available on your `$PATH`, to
@@ -47,6 +39,17 @@ Available commands:
 
 Run "dab help <command>" for more information about a command.
 ```
+
+### known issues
+
+- It **WILL** eat the `executables` section, pending
+[dart-lang/pubspec_parse#49](https://github.com/dart-lang/pubspec_parse/issues/49).
+
+- It **WILL** eat comments.
+
+- It will **NOT** preserve dependency order.  But it sorts them alphabetically to minimize churn.
+
+It's always a good idea review the changes: `git diff pubspec.yaml`.
 
 ### hacking
 
