@@ -3,7 +3,8 @@ version: 0.1.0
 description: The dart+pub companion.  ヽ( •_)ᕗ
 authors:
   - mockturtl <mockturtl@gmail.com>
-homepage: https://pub.dev/packages/dab
+homepage: https://github.com/mockturtl/dab
+issue_tracker: https://github.com/mockturtl/dab/issues
 
 dependencies:
   args: ^1.5.2
