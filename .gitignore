@@ -11,7 +11,5 @@ doc/api/
 # secrets
 .env
 *.token
-# pending audit
-*.txt
-# pending audit
-tool/*.sh
+
+tmp/
