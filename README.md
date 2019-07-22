@@ -47,7 +47,7 @@ Run "dab help <command>" for more information about a command.
 
 - It **WILL** eat comments.
 
-- It will **NOT** preserve dependency order.  But it sorts them alphabetically to minimize churn.
+- It **WILL** sort dependencies alphabetically.
 
 It's always a good idea review the changes: `git diff pubspec.yaml`.
 

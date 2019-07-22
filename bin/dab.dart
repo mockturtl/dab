@@ -23,7 +23,6 @@ main(List<String> args) async {
 
   var f = opts.filename;
   await File(f).writeAsString(out, flush: true);
-  print("\nUpdated $f.");
 
   if (opts.update) {
     print("Running 'pub get'...");
