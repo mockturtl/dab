@@ -42,6 +42,9 @@ Run "dab help <command>" for more information about a command.
 
 ### known issues
 
+- TODO: error handling
+- TODO: tests
+
 - It **WILL** eat the `executables` section, pending
 [dart-lang/pubspec_parse#49](https://github.com/dart-lang/pubspec_parse/issues/49).
 
