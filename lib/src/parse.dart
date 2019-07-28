@@ -33,7 +33,9 @@ String toYaml(Pubspec p, [bool sort = true, bool scpSyntax = true]) {
 
   if (_has(p.authors)) {
     buf.writeln('authors:');
-    for (var a in p.authors) buf.writeln('  - ${a}');
+    for (var a in p.authors) {
+      buf.writeln('  - ${a}');
+    }
   }
 
   // FIXME: this is specified as a link, not a string

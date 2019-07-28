@@ -1,6 +1,6 @@
 name: dab
 version: 0.1.0+1
-description: The dart+pub companion.  ヽ( •_)ᕗ
+description: The dart+pub companion. Easily add dependencies from the command line.
 authors:
   - mockturtl <mockturtl@gmail.com>
 homepage: https://github.com/mockturtl/dab
@@ -9,7 +9,7 @@ issue_tracker: https://github.com/mockturtl/dab/issues
 dependencies:
   args: ^1.5.2
   build_cli_annotations: ^1.1.0
-  http: ^0.11.3
+  http: ^0.12.0
   json_annotation: ^2.0.0
   logging: ^0.11.3+2
   pub_semver: ^1.4.2
