@@ -1,5 +1,5 @@
 name: dab
-version: 0.1.0+1
+version: 0.1.0+2
 description: The dart+pub companion. Easily add dependencies from the command line.
 authors:
   - mockturtl <mockturtl@gmail.com>
