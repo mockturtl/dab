@@ -6,6 +6,13 @@ part of 'options.dart';
 // CliGenerator
 // **************************************************************************
 
+final _$parserForOptions = _$populateOptionsParser(ArgParser());
+
+Options parseOptions(List<String> args) {
+  final result = _$parserForOptions.parse(args);
+  return _$parseOptionsResult(result);
+}
+
 Options _$parseOptionsResult(ArgResults result) => Options(
     result['filename'] as String,
     result['sort'] as bool,
@@ -19,18 +26,13 @@ ArgParser _$populateOptionsParser(ArgParser parser) => parser
       abbr: 'f', help: 'Pubspec file to edit', defaultsTo: 'pubspec.yaml')
   ..addFlag('dry-run',
       abbr: 'n',
+      negatable: false,
       help: 'Only print the modified pubspec, without overwriting the file.',
       defaultsTo: false)
   ..addFlag('sort',
       abbr: 's', help: 'Sort list output alphabetically.', defaultsTo: true)
   ..addFlag('update',
       abbr: 'u',
+      negatable: false,
       help: 'Run "pub get" with the new pubspec.',
       defaultsTo: false);
-
-final _$parserForOptions = _$populateOptionsParser(ArgParser());
-
-Options parseOptions(List<String> args) {
-  final result = _$parserForOptions.parse(args);
-  return _$parseOptionsResult(result);
-}

@@ -3,16 +3,17 @@ import 'package:args/command_runner.dart';
 import '../io.dart';
 import '../options.dart';
 import '../parse.dart';
+import 'mixin.dart';
 
 /// Remove a dependency.
-class RemoveCommand extends Command<String> {
+class RemoveCommand extends Command<void> with WriterMixin {
   @override
   String get description => 'Remove a package from the pubspec.';
 
   @override
   String get name => 'rm';
 
-  Future<String> run() async {
+  Future<void> run() async {
     var pkg = await latestVersion(argResults.rest.first);
     var opts = Options.from(globalResults);
     var pubspec = await loadPubspec(opts.filename);
@@ -22,6 +23,7 @@ class RemoveCommand extends Command<String> {
     pubspec.devDependencies.remove(k);
     pubspec.dependencyOverrides.remove(k);
 
-    return toYaml(pubspec, opts.sort, opts.scpSyntax);
+    var out = toYaml(pubspec, opts.sort, opts.scpSyntax);
+    write(opts, out);
   }
 }

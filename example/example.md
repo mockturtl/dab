@@ -2,11 +2,11 @@ usage
 -----
 
 ```sh
-$ dab dep http
+$ dab add http
 ```
 
 ```sh
-$ dab devdep pedantic
+$ dab add --dev pedantic
 ```
 
 ```sh
