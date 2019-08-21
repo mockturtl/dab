@@ -113,7 +113,7 @@ void _flutterToYaml(StringBuffer buf, Map<String, dynamic> flutter) {
     assets.forEach((a) => buf.writeln('    - $a'));
   }
 
-  if (_has(flutter[_assets])) {
+  if (_has(flutter[_fonts])) {
     buf.writeln('  fonts:');
     var families = List.castFrom<dynamic, YamlMap>(flutter[_fonts]);
     families.forEach((fam) {
