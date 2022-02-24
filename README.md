@@ -1,3 +1,7 @@
+**ARCHIVED**.  `dart pub` now has native `add, remove` subcommands.
+
+----
+
 dab adds package dependencies to your pubspec, saving you a trip to [pub.dev](https://pub.dev)
 to look up the latest version.
 
